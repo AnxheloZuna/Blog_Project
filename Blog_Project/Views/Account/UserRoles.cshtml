@@ -1,0 +1,174 @@
+﻿<style>
+    .alert {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 9999;
+    }
+
+    .table td {
+        text-align: center;
+    }
+
+    .table th {
+        text-align: center;
+    }
+
+    .highlighted {
+        background-color: yellow; /* Change this color to your preference */
+    }
+    /* Outline primary button styling */
+    .btn-outline-primary {
+        color: #007bff;
+        border-color: #007bff;
+    }
+
+        /* Hover and focus styles */
+        .btn-outline-primary:hover,
+        .btn-outline-primary:focus {
+            color: #0056b3;
+            border-color: #0056b3;
+            background-color: #337AB7;
+            color: white;
+        }
+
+        /* Active and disabled styles */
+        .btn-outline-primary:active,
+        .btn-outline-primary.disabled,
+        .btn-outline-primary:disabled {
+            color: #007bff;
+            background-color: transparent;
+            border-color: #007bff;
+        }
+</style>
+
+<br />
+<img src="~/img/reply.png" /><a href="javascript:void(0);" onclick="history.back();">Go Back</a>
+<br />
+<br />
+<nav id="" style="background-color: #F6F6F6;">
+    <!-- container -->
+    <div class="container">
+        <ul class="main-nav nav navbar-nav" style="margin:auto;">
+            <li class="nav-item">
+                @using (Html.BeginForm("AddRole", "Account", FormMethod.Post))
+                {
+                    <div style="display:flex;flex-direction:row;  border-radius:20px;margin:auto; ">
+                        <input type="text" name="newRole" style="width: 350px; border-radius: 20px;" class="form-control" placeholder="Shto nje rol te ri..." required />&nbsp;
+                        <button type="submit" class="btn btn-primary" style="border-radius:20px;">Add Role</button>
+                    </div>
+                }
+            </li>
+            <li class="nav-item">
+                @using (Html.BeginForm("SearchUser", "Account", FormMethod.Post, new { id = "searchForm" }))
+                {
+                    <div class="input-group" style="display:flex;flex-direction:row; margin:auto;">
+                        <input class="form-control search-input" style="width: 350px; border-radius: 20px" name="searchTerm" id="searchTerm" placeholder="Kerko ketu">&nbsp;
+                        <div class="input-group-append">
+                            <button class="btn btn-primary search-btn" type="submit" style="border-radius:20px;"><i class="fa fa-search"></i> Kerko</button>
+                        </div>
+                    </div>
+                }
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<br />
+@if (TempData["AddRole"] != null)
+{
+    <div class="alert alert-success" id="alert">
+        <i class="fa-solid fa-circle-check"></i> @TempData["AddRole"]
+    </div>
+}
+@if (TempData["PostMessage"] != null)
+{
+    <div class="alert alert-success" id="alert">
+        <i class="fa-solid fa-circle-check"></i> @TempData["PostMessage"]
+    </div>
+}
+@if (TempData["AddRoleFailed"] != null)
+{
+    <div class="alert alert-warning" id="alert">
+        <i class="fa-solid fa-triangle-exclamation"></i> @TempData["AddRoleFailed"]
+    </div>
+}
+<table class="table table-striped" style="border:1px solid #C0C0C0;">
+    <thead>
+        <tr class="table-active">
+            <th>Emri i perdoruesit</th>
+            <th>Roli</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var userRole in Model)
+        {
+            <tr>
+                <td>
+                    <button class="btn btn-default">
+                        <i class="fa fa-user"></i> @userRole.UserName
+                    </button>
+                </td>
+                <td>
+                    <span id="currentRole_@userRole.UserId"></span>
+                    @using (Html.BeginForm("ChangeUserRole", "Account", new { id = userRole.UserId }, FormMethod.Post))
+                    {
+                        <input type="hidden" name="UserId" value="@userRole.UserId" />
+                        <select name="NewRole" class="btn btn-outline-primary" required>
+                            @foreach (var role in ViewBag.Roles)
+                            {
+                                <option value="@role" @(userRole.Role == role ? "selected" : "")>@role</option>
+                            }
+                        </select>
+                        <button type="submit" class="btn btn-info">Ndrysho Rolin</button>
+                    }
+                </td>
+
+            </tr>
+        }
+        @*<option value="Admin" @if (userRole.Role == "Admin") { <text> selected</text> }>Admin</option>*@
+
+    </tbody>
+</table>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#searchForm').submit(function (e) {
+            e.preventDefault();
+
+            var searchTerm = $('#searchTerm').val().trim().toLowerCase(); // Convert to lowercase
+
+            var searchUrl = '@Url.Action("SearchUser", "Account")';
+
+            $.ajax({
+                url: searchUrl,
+                data: { searchTerm: searchTerm },
+                type: 'POST',
+                success: function (data) {
+                    $('#usersTable tbody').html(data);
+                },
+                error: function () {
+                    // Handle errors if needed
+                }
+            });
+        });
+    });
+</script>
+
+
+<script>
+    var toastElement = document.getElementById('alert');
+    //toastElement.innerText = "Posti juaj u dergua me sukses. Ju lutem prisni per aprovimin e postit tuaj!";
+    toastElement.style.display = 'block';
+    setTimeout(function () {
+        toastElement.style.display = 'none';
+    }, 3000); // Display toast for 3 seconds
+
+    form.reset();
+</script>
+
+
+

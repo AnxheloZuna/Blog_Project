@@ -1,0 +1,465 @@
+﻿@model Blog_Project.Models.StudentVM
+@{
+    ViewBag.Title = "Student Dashboard";
+}
+<style>
+    #successToast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1050;
+        display: none;
+    }
+
+    .chat-logo {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+    }
+
+        .chat-logo img {
+            width: 100%;
+            height: 100%;
+        }
+
+    .chatbot-container {
+        position: fixed;
+        bottom: 80px;
+        right: 20px;
+        width: 300px;
+        max-height: 400px;
+        background-color: white;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .chat-header {
+        background-color: #007bff;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        position: relative;
+    }
+
+    .close-chatbot {
+        position: absolute;
+        right: 10px;
+        top: 5px;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .chat-messages {
+        flex: 1;
+        padding: 10px;
+        overflow-y: auto;
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .chat-option {
+        width: 100%;
+        padding: 10px;
+        background-color: #f1f1f1;
+        border: none;
+        text-align: left;
+        cursor: pointer;
+    }
+
+        .chat-option:hover {
+            background-color: #ddd;
+        }
+
+    /* Ensure you include existing styles for the chatbot */
+
+    .chat-messages {
+        flex: 1;
+        padding: 10px;
+        overflow-y: auto;
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .message {
+        margin-bottom: 10px;
+        max-width: 80%;
+        padding: 8px 12px;
+        border-radius: 5px;
+        display: flex;
+    }
+
+    .user-message {
+        align-self: flex-end;
+        background-color: #007bff;
+        color: white;
+        text-align: right;
+    }
+
+    .chatbot-message {
+        align-self: flex-start;
+        background-color: #f1f1f1;
+        color: black;
+        text-align: left;
+    }
+</style>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Course title</th>
+            <th scope="col">Professor Name</th>
+            <th scope="col">Exam Date</th>
+            <th scope="col">Absences</th>
+            <th scope="col">Grade</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var i in Model.Students)
+        {
+            <tr>
+                <td scope="row"></td>
+                <td scope="row" id="titulli">@i.CourseTitle</td>
+                <td>@i.ProfessorName</td>
+                <td>@(i.ExamDate.HasValue ? i.ExamDate.Value.ToString("MM/dd/yyyy") : "") </td>
+                <td>@i.Absent</td>
+                <td>@i.Grade</td>
+            </tr>
+
+        }
+    </tbody>
+</table>
+
+<!-- Modal -->
+<div class="modal fade" id="addCourse" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Course</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="courseForm">
+                    <div class="form-group">
+                        <label for="courseName">Course name</label>
+                        <input type="text" class="form-control" id="courseName" aria-describedby="course" placeholder="Enter course">
+                        <small id="courseNameErr" style="color:red;display:none;" class="form-text text-muted">Please add a course name!</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="examDate">Exam Date</label>
+                        <input type="date" class="form-control" id="examDate" aria-describedby="examDateHelp" placeholder="Enter exam date">
+                        <small id="examDateHelp" class="form-text text-muted">Optional</small>
+                    </div>
+
+
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="editCourse" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel1">Add Course</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editCourseForm">
+                    <div class="form-group">
+                        <label for="courseName">Course name</label>
+                        <input type="text" class="form-control" id="editCourseName" aria-describedby="course" placeholder="Enter course">
+                        <small id="editCourseNameErr" style="color:red;display:none;" class="form-text text-muted">Please add a course name!</small>
+                        <input type="hidden" id="editCourseId" value="" />
+                    </div>
+                    <div class="form-group">
+                        <label for="examDate">Exam Date</label>
+                        <input type="date" class="form-control" id="editExamDate" aria-describedby="examDateHelp" placeholder="Enter exam date">
+                        <small id="examDateHelp" class="form-text text-muted">Optional</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="confirmEditCourse" class="btn btn-primary">Edit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteCourse" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel2">Delete Course</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this course?
+                <input type="hidden" id="deleteCourseId" value="" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="confirmDeleteCourse" class="btn btn-primary">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="addStudent" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Student</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addStudentForm">
+                    <div class="form-group">
+                        <label for="studentName">Student name</label>
+                        <input type="text" class="form-control" id="studentName" aria-describedby="course" placeholder="Add student">
+                        <small id="studentNameErr" style="color:red;display:none;" class="form-text text-muted">Please add a student name!</small>
+                        <input type="hidden" id="studentCourseId" value="" />
+                    </div>
+                    @*<button type="submit" class="btn btn-primary">Submit</button>*@
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button id="confirmaddStudent" class="btn btn-primary">Edit</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="chat-logo" class="chat-logo">
+    <img src="~/img/chatbot.png" alt="Chat Logo">
+</div>
+<div id="chatbot-container" class="chatbot-container">
+    <div class="chat-header">
+        <span>Chatbot</span>
+        <button id="close-chatbot" class="close-chatbot">&times;</button>
+    </div>
+    <div class="chat-options">
+        <button class="chat-option" data-question="Has the exam started to be evaluated?">Has the exam started to be evaluated?</button>
+        <button class="chat-option" data-question="How long does it take to get the answers to the exam?">How long does it take to get the answers to the exam?</button>
+        <button class="chat-option" data-question="Can I review the exam?">Can I review the exam?</button>
+        <button class="chat-option" data-question="Can I retake the exam for improvement?">Can I retake the exam for improvement?</button>
+    </div>
+    <div id="chat-messages" class="chat-messages">
+        <!-- Chat messages will be displayed here -->
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#courseForm").on("submit", function (event) {
+            event.preventDefault();
+            var courseName = $("#courseName").val();
+            var examDate = $("#examDate").val();
+            if (!courseName) {
+                $("#courseNameErr").css("display", "block");
+            } else {
+                $("#courseNameErr").css("display", "none");
+                $.ajax({
+                    type: "POST",
+                    url: "/ProfessorView/AddCourseName",
+                    data: {
+                        courseName: courseName,
+                        examDate: examDate,
+                    },
+                    success: function (response) {
+
+                        location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error
+                        console.error(error);
+                    }
+                });
+
+            }
+        });
+
+        $("#deleteCourseRow").on("click", function (event) {
+            debugger;
+            function deleteCourse(id) {
+                //debugger;
+                var courseId = $('#titulli').data('id');
+
+                $.ajax({
+                    type: "POST",
+                    url: "/ProfessorView/DeleteCourseName",
+                    data: {
+                        id: id
+                    },
+                    success: function (response) {
+
+                        location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error
+                        console.error(error);
+                    }
+                });
+            }
+        });
+        $(document).on("click", ".add-student", function () {
+            var courseId = $(this).data('id');
+            $('#studentCourseId').val(courseId);
+            $('#addStudent').modal('show');
+        });
+
+        $('#confirmaddStudent').on("click", function () {
+            var courseId = $('#studentCourseId').val();
+            addStudent(courseId);
+            $('#addStudent').modal('hide');
+        });
+        function addStudent(id) {
+            var studentName = $("#studentName").val(); // Update variable name here
+            $.ajax({
+                type: "POST",
+                url: "/ProfessorView/AddNewStudents",
+                data: {
+                    courseId: id,
+                    studentName: studentName, // Pass the correct variable here
+                    professorId: 2
+                },
+                success: function (response) {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
+
+    });
+
+    document.querySelectorAll('table').forEach(table => {
+        let rows = table.querySelectorAll('tbody tr');
+        rows.forEach((row, index) => {
+            row.querySelector('td').textContent = index + 1;
+        });
+    });
+
+    //Delete course
+    $(document).on("click", ".delete-course", function () {
+        var courseId = $(this).data('id');
+        $('#deleteCourseId').val(courseId);
+        $('#deleteCourse').modal('show');
+    });
+
+    $('#confirmDeleteCourse').on("click", function () {
+        var courseId = $('#deleteCourseId').val();
+        deleteCourse(courseId);
+        $('#deleteCourse').modal('hide');
+    });
+    //Edit course
+
+    $(document).on("click", ".edit-course", function () {
+        var courseId = $(this).data('id');
+        $('#editCourseId').val(courseId);
+        $('#editCourse').modal('show');
+    });
+
+    $('#confirmEditCourse').on("click", function () {
+        var courseId = $('#editCourseId').val();
+        editCourse(courseId);
+        $('#deleteCourse').modal('hide');
+    });
+
+
+    function editCourse(id) {
+        var courseName = $("#editCourseName").val();
+        var examDate = $("#editExamDate").val();
+        $.ajax({
+            type: "POST",
+            url: "/ProfessorView/EditCourseName",
+            data: { courseName: courseName, id: id, examDate: examDate },
+            success: function (response) {
+                location.reload();
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const chatLogo = document.getElementById('chat-logo');
+        const chatbotContainer = document.getElementById('chatbot-container');
+        const closeChatbot = document.getElementById('close-chatbot');
+        const chatOptions = document.querySelectorAll('.chat-option');
+        const chatMessages = document.getElementById('chat-messages');
+
+        var isEvaluated = "@Model.isEvaluatedTitle";
+        var evaluatedTime = "@Model.Evaluation_Time";
+        var evaluationReview = "@Model.evaluationReview";
+        var evaluationRetake = "@Model.evaluationRetake";
+
+        chatLogo.addEventListener('click', function () {
+            chatbotContainer.style.display = 'flex';
+        });
+
+        closeChatbot.addEventListener('click', function () {
+            chatbotContainer.style.display = 'none';
+        });
+
+        chatOptions.forEach(option => {
+            option.addEventListener('click', function () {
+                const question = this.getAttribute('data-question');
+                addMessage(question, 'user-message');  // Add the user's message
+                getAnswer(question);  // Get and add the chatbot's response
+            });
+        });
+
+        function addMessage(text, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = text;
+            messageDiv.classList.add('message', type);
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;  // Auto-scroll to the bottom
+        }
+
+        function getAnswer(questionKey) {
+            const answers = {
+                'Has the exam started to be evaluated?': 'Yes, the exam ' + isEvaluated + ' has started to be evaluated.',
+                'How long does it take to get the answers to the exam?': evaluatedTime,
+                'Can I review the exam?': evaluationReview,
+                'Can I retake the exam for improvement?': evaluationRetake
+            };
+
+            const answer = answers[questionKey] || 'There is no information about this question!';
+            setTimeout(() => addMessage(answer, 'chatbot-message'), 500);  // Simulate a delay for response
+        }
+    });
+
+</script>
+

@@ -1,0 +1,669 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="UNIVERSITY_MANAGEMENT_SYSTEMModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="COURSES">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CREATED_AT" Type="datetime" />
+          <Property Name="MODIFIED_AT" Type="datetime" />
+          <Property Name="CREATED_BY" Type="int" />
+          <Property Name="MODIFIED_BY" Type="int" />
+          <Property Name="INVALIDATED" Type="bit" />
+          <Property Name="PROFESSOR_ID" Type="int" />
+          <Property Name="Title" Type="varchar" MaxLength="255" />
+          <Property Name="Exam_Date" Type="date" />
+          <Property Name="Evaluated_Time" Type="nvarchar" MaxLength="255" />
+          <Property Name="isEvaluated" Type="int" />
+          <Property Name="Review" Type="int" />
+          <Property Name="Retake" Type="int" />
+        </EntityType>
+        <EntityType Name="EVALUATION">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PROFESSOR_ID" Type="int" />
+          <Property Name="STUDENT_ID" Type="int" />
+          <Property Name="COURSES_ID" Type="int" />
+          <Property Name="GRADE" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="CREATED_AT" Type="datetime" />
+          <Property Name="MODIFIED_AT" Type="datetime" />
+          <Property Name="CREATED_BY" Type="int" />
+          <Property Name="MODIFIED_BY" Type="int" />
+          <Property Name="INVALIDATED" Type="bit" />
+          <Property Name="Students_Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="ABSENT" Type="int" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="UserRoleMapping">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Role" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="ModifiedAt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="UserRoles">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="int" />
+          <Property Name="RoleId" Type="int" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="ModifiedAt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Users_Table">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="50" />
+          <Property Name="Email" Type="varchar" MaxLength="255" />
+          <Property Name="Password" Type="varchar" MaxLength="255" />
+          <Property Name="CreatedAt" Type="datetime" />
+          <Property Name="ModifiedAt" Type="datetime" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="EmailConfirmationToken" Type="nvarchar" MaxLength="100" />
+          <Property Name="EmailConfirmed" Type="bit" />
+          <Property Name="ConfirmPassword" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <Association Name="FK__COURSES__PROFESS__05D8E0BE">
+          <End Role="Users_Table" Type="Self.Users_Table" Multiplicity="0..1" />
+          <End Role="COURSES" Type="Self.COURSES" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users_Table">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="COURSES">
+              <PropertyRef Name="PROFESSOR_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__EVALUATIO__COURS__3587F3E0">
+          <End Role="COURSES" Type="Self.COURSES" Multiplicity="0..1" />
+          <End Role="EVALUATION" Type="Self.EVALUATION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="COURSES">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EVALUATION">
+              <PropertyRef Name="COURSES_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__EVALUATIO__PROFE__339FAB6E">
+          <End Role="Users_Table" Type="Self.Users_Table" Multiplicity="0..1" />
+          <End Role="EVALUATION" Type="Self.EVALUATION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users_Table">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="EVALUATION">
+              <PropertyRef Name="PROFESSOR_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__EVALUATIO__STUDE__3493CFA7">
+          <End Role="Users_Table" Type="Self.Users_Table" Multiplicity="0..1" />
+          <End Role="EVALUATION" Type="Self.EVALUATION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users_Table">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="EVALUATION">
+              <PropertyRef Name="STUDENT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserRoles__RoleI__3C34F16F">
+          <End Role="UserRoleMapping" Type="Self.UserRoleMapping" Multiplicity="0..1" />
+          <End Role="UserRoles" Type="Self.UserRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserRoleMapping">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserRoles">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserRoles__RoleI__75A278F5">
+          <End Role="UserRoleMapping" Type="Self.UserRoleMapping" Multiplicity="0..1" />
+          <End Role="UserRoles" Type="Self.UserRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserRoleMapping">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserRoles">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserRoles__UserI__3D2915A8">
+          <End Role="Users_Table" Type="Self.Users_Table" Multiplicity="0..1" />
+          <End Role="UserRoles" Type="Self.UserRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users_Table">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserRoles">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserRoles__UserI__76969D2E">
+          <End Role="Users_Table" Type="Self.Users_Table" Multiplicity="0..1" />
+          <End Role="UserRoles" Type="Self.UserRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users_Table">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserRoles">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
+        <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <EntityContainer Name="UNIVERSITY_MANAGEMENT_SYSTEMModelStoreContainer">
+          <EntitySet Name="COURSES" EntityType="Self.COURSES" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EVALUATION" EntityType="Self.EVALUATION" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserRoleMapping" EntityType="Self.UserRoleMapping" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserRoles" EntityType="Self.UserRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users_Table" EntityType="Self.Users_Table" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__COURSES__PROFESS__05D8E0BE" Association="Self.FK__COURSES__PROFESS__05D8E0BE">
+            <End Role="Users_Table" EntitySet="Users_Table" />
+            <End Role="COURSES" EntitySet="COURSES" />
+          </AssociationSet>
+          <AssociationSet Name="FK__EVALUATIO__COURS__3587F3E0" Association="Self.FK__EVALUATIO__COURS__3587F3E0">
+            <End Role="COURSES" EntitySet="COURSES" />
+            <End Role="EVALUATION" EntitySet="EVALUATION" />
+          </AssociationSet>
+          <AssociationSet Name="FK__EVALUATIO__PROFE__339FAB6E" Association="Self.FK__EVALUATIO__PROFE__339FAB6E">
+            <End Role="Users_Table" EntitySet="Users_Table" />
+            <End Role="EVALUATION" EntitySet="EVALUATION" />
+          </AssociationSet>
+          <AssociationSet Name="FK__EVALUATIO__STUDE__3493CFA7" Association="Self.FK__EVALUATIO__STUDE__3493CFA7">
+            <End Role="Users_Table" EntitySet="Users_Table" />
+            <End Role="EVALUATION" EntitySet="EVALUATION" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserRoles__RoleI__3C34F16F" Association="Self.FK__UserRoles__RoleI__3C34F16F">
+            <End Role="UserRoleMapping" EntitySet="UserRoleMapping" />
+            <End Role="UserRoles" EntitySet="UserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserRoles__RoleI__75A278F5" Association="Self.FK__UserRoles__RoleI__75A278F5">
+            <End Role="UserRoleMapping" EntitySet="UserRoleMapping" />
+            <End Role="UserRoles" EntitySet="UserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserRoles__UserI__3D2915A8" Association="Self.FK__UserRoles__UserI__3D2915A8">
+            <End Role="Users_Table" EntitySet="Users_Table" />
+            <End Role="UserRoles" EntitySet="UserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserRoles__UserI__76969D2E" Association="Self.FK__UserRoles__UserI__76969D2E">
+            <End Role="Users_Table" EntitySet="Users_Table" />
+            <End Role="UserRoles" EntitySet="UserRoles" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="UNIVERSITY_MANAGEMENT_SYSTEMModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="COURS">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
+          <Property Name="MODIFIED_AT" Type="DateTime" Precision="3" />
+          <Property Name="CREATED_BY" Type="Int32" />
+          <Property Name="MODIFIED_BY" Type="Int32" />
+          <Property Name="INVALIDATED" Type="Boolean" />
+          <Property Name="PROFESSOR_ID" Type="Int32" />
+          <Property Name="Title" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Exam_Date" Type="DateTime" Precision="0" />
+          <Property Name="Evaluated_Time" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="isEvaluated" Type="Int32" />
+          <Property Name="Review" Type="Int32" />
+          <Property Name="Retake" Type="Int32" />
+          <NavigationProperty Name="Users_Table" Relationship="Self.FK__COURSES__PROFESS__05D8E0BE" FromRole="COURSES" ToRole="Users_Table" />
+          <NavigationProperty Name="EVALUATIONs" Relationship="Self.FK__EVALUATIO__COURS__3587F3E0" FromRole="COURSES" ToRole="EVALUATION" />
+        </EntityType>
+        <EntityType Name="EVALUATION">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PROFESSOR_ID" Type="Int32" />
+          <Property Name="STUDENT_ID" Type="Int32" />
+          <Property Name="COURSES_ID" Type="Int32" />
+          <Property Name="GRADE" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
+          <Property Name="MODIFIED_AT" Type="DateTime" Precision="3" />
+          <Property Name="CREATED_BY" Type="Int32" />
+          <Property Name="MODIFIED_BY" Type="Int32" />
+          <Property Name="INVALIDATED" Type="Boolean" />
+          <Property Name="Students_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ABSENT" Type="Int32" />
+          <NavigationProperty Name="COURS" Relationship="Self.FK__EVALUATIO__COURS__3587F3E0" FromRole="EVALUATION" ToRole="COURSES" />
+          <NavigationProperty Name="Users_Table" Relationship="Self.FK__EVALUATIO__PROFE__339FAB6E" FromRole="EVALUATION" ToRole="Users_Table" />
+          <NavigationProperty Name="Users_Table1" Relationship="Self.FK__EVALUATIO__STUDE__3493CFA7" FromRole="EVALUATION" ToRole="Users_Table" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="UserRoleMapping">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Role" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedAt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="UserRoles" Relationship="Self.FK__UserRoles__RoleI__3C34F16F" FromRole="UserRoleMapping" ToRole="UserRoles" />
+          <NavigationProperty Name="UserRoles1" Relationship="Self.FK__UserRoles__RoleI__75A278F5" FromRole="UserRoleMapping" ToRole="UserRoles" />
+        </EntityType>
+        <EntityType Name="UserRole">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" />
+          <Property Name="RoleId" Type="Int32" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedAt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="UserRoleMapping" Relationship="Self.FK__UserRoles__RoleI__3C34F16F" FromRole="UserRoles" ToRole="UserRoleMapping" />
+          <NavigationProperty Name="UserRoleMapping1" Relationship="Self.FK__UserRoles__RoleI__75A278F5" FromRole="UserRoles" ToRole="UserRoleMapping" />
+          <NavigationProperty Name="Users_Table" Relationship="Self.FK__UserRoles__UserI__3D2915A8" FromRole="UserRoles" ToRole="Users_Table" />
+          <NavigationProperty Name="Users_Table1" Relationship="Self.FK__UserRoles__UserI__76969D2E" FromRole="UserRoles" ToRole="Users_Table" />
+        </EntityType>
+        <EntityType Name="Users_Table">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Password" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedAt" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="EmailConfirmationToken" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="EmailConfirmed" Type="Boolean" />
+          <Property Name="ConfirmPassword" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="COURSES" Relationship="Self.FK__COURSES__PROFESS__05D8E0BE" FromRole="Users_Table" ToRole="COURSES" />
+          <NavigationProperty Name="EVALUATIONs" Relationship="Self.FK__EVALUATIO__PROFE__339FAB6E" FromRole="Users_Table" ToRole="EVALUATION" />
+          <NavigationProperty Name="EVALUATIONs1" Relationship="Self.FK__EVALUATIO__STUDE__3493CFA7" FromRole="Users_Table" ToRole="EVALUATION" />
+          <NavigationProperty Name="UserRoles" Relationship="Self.FK__UserRoles__UserI__3D2915A8" FromRole="Users_Table" ToRole="UserRoles" />
+          <NavigationProperty Name="UserRoles1" Relationship="Self.FK__UserRoles__UserI__76969D2E" FromRole="Users_Table" ToRole="UserRoles" />
+        </EntityType>
+        <Association Name="FK__COURSES__PROFESS__05D8E0BE">
+          <End Role="Users_Table" Type="Self.Users_Table" Multiplicity="0..1" />
+          <End Role="COURSES" Type="Self.COURS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users_Table">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="COURSES">
+              <PropertyRef Name="PROFESSOR_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__EVALUATIO__COURS__3587F3E0">
+          <End Role="COURSES" Type="Self.COURS" Multiplicity="0..1" />
+          <End Role="EVALUATION" Type="Self.EVALUATION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="COURSES">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EVALUATION">
+              <PropertyRef Name="COURSES_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__EVALUATIO__PROFE__339FAB6E">
+          <End Role="Users_Table" Type="Self.Users_Table" Multiplicity="0..1" />
+          <End Role="EVALUATION" Type="Self.EVALUATION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users_Table">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="EVALUATION">
+              <PropertyRef Name="PROFESSOR_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__EVALUATIO__STUDE__3493CFA7">
+          <End Role="Users_Table" Type="Self.Users_Table" Multiplicity="0..1" />
+          <End Role="EVALUATION" Type="Self.EVALUATION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users_Table">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="EVALUATION">
+              <PropertyRef Name="STUDENT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserRoles__RoleI__3C34F16F">
+          <End Role="UserRoleMapping" Type="Self.UserRoleMapping" Multiplicity="0..1" />
+          <End Role="UserRoles" Type="Self.UserRole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserRoleMapping">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserRoles">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserRoles__RoleI__75A278F5">
+          <End Role="UserRoleMapping" Type="Self.UserRoleMapping" Multiplicity="0..1" />
+          <End Role="UserRoles" Type="Self.UserRole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserRoleMapping">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserRoles">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserRoles__UserI__3D2915A8">
+          <End Role="Users_Table" Type="Self.Users_Table" Multiplicity="0..1" />
+          <End Role="UserRoles" Type="Self.UserRole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users_Table">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserRoles">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserRoles__UserI__76969D2E">
+          <End Role="Users_Table" Type="Self.Users_Table" Multiplicity="0..1" />
+          <End Role="UserRoles" Type="Self.UserRole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users_Table">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserRoles">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="UNIVERSITY_MANAGEMENT_SYSTEMEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="COURSES" EntityType="Self.COURS" />
+          <EntitySet Name="EVALUATIONs" EntityType="Self.EVALUATION" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <EntitySet Name="UserRoleMappings" EntityType="Self.UserRoleMapping" />
+          <EntitySet Name="UserRoles" EntityType="Self.UserRole" />
+          <EntitySet Name="Users_Table" EntityType="Self.Users_Table" />
+          <AssociationSet Name="FK__COURSES__PROFESS__05D8E0BE" Association="Self.FK__COURSES__PROFESS__05D8E0BE">
+            <End Role="Users_Table" EntitySet="Users_Table" />
+            <End Role="COURSES" EntitySet="COURSES" />
+          </AssociationSet>
+          <AssociationSet Name="FK__EVALUATIO__COURS__3587F3E0" Association="Self.FK__EVALUATIO__COURS__3587F3E0">
+            <End Role="COURSES" EntitySet="COURSES" />
+            <End Role="EVALUATION" EntitySet="EVALUATIONs" />
+          </AssociationSet>
+          <AssociationSet Name="FK__EVALUATIO__PROFE__339FAB6E" Association="Self.FK__EVALUATIO__PROFE__339FAB6E">
+            <End Role="Users_Table" EntitySet="Users_Table" />
+            <End Role="EVALUATION" EntitySet="EVALUATIONs" />
+          </AssociationSet>
+          <AssociationSet Name="FK__EVALUATIO__STUDE__3493CFA7" Association="Self.FK__EVALUATIO__STUDE__3493CFA7">
+            <End Role="Users_Table" EntitySet="Users_Table" />
+            <End Role="EVALUATION" EntitySet="EVALUATIONs" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserRoles__RoleI__3C34F16F" Association="Self.FK__UserRoles__RoleI__3C34F16F">
+            <End Role="UserRoleMapping" EntitySet="UserRoleMappings" />
+            <End Role="UserRoles" EntitySet="UserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserRoles__RoleI__75A278F5" Association="Self.FK__UserRoles__RoleI__75A278F5">
+            <End Role="UserRoleMapping" EntitySet="UserRoleMappings" />
+            <End Role="UserRoles" EntitySet="UserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserRoles__UserI__3D2915A8" Association="Self.FK__UserRoles__UserI__3D2915A8">
+            <End Role="Users_Table" EntitySet="Users_Table" />
+            <End Role="UserRoles" EntitySet="UserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserRoles__UserI__76969D2E" Association="Self.FK__UserRoles__UserI__76969D2E">
+            <End Role="Users_Table" EntitySet="Users_Table" />
+            <End Role="UserRoles" EntitySet="UserRoles" />
+          </AssociationSet>
+          <FunctionImport Name="sp_alterdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_creatediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_dropdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(UNIVERSITY_MANAGEMENT_SYSTEMModel.sp_helpdiagramdefinition_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(UNIVERSITY_MANAGEMENT_SYSTEMModel.sp_helpdiagrams_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_renamediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="new_diagramname" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_upgraddiagrams" />
+        </EntityContainer>
+        <ComplexType Name="sp_helpdiagramdefinition_Result">
+          <Property Type="Int32" Name="version" Nullable="true" />
+          <Property Type="Binary" Name="definition" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagrams_Result">
+          <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+          <Property Type="Int32" Name="OwnerID" Nullable="false" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="UNIVERSITY_MANAGEMENT_SYSTEMModelStoreContainer" CdmEntityContainer="UNIVERSITY_MANAGEMENT_SYSTEMEntities">
+          <EntitySetMapping Name="COURSES">
+            <EntityTypeMapping TypeName="UNIVERSITY_MANAGEMENT_SYSTEMModel.COURS">
+              <MappingFragment StoreEntitySet="COURSES">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CREATED_AT" ColumnName="CREATED_AT" />
+                <ScalarProperty Name="MODIFIED_AT" ColumnName="MODIFIED_AT" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="INVALIDATED" ColumnName="INVALIDATED" />
+                <ScalarProperty Name="PROFESSOR_ID" ColumnName="PROFESSOR_ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Exam_Date" ColumnName="Exam_Date" />
+                <ScalarProperty Name="Evaluated_Time" ColumnName="Evaluated_Time" />
+                <ScalarProperty Name="isEvaluated" ColumnName="isEvaluated" />
+                <ScalarProperty Name="Review" ColumnName="Review" />
+                <ScalarProperty Name="Retake" ColumnName="Retake" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EVALUATIONs">
+            <EntityTypeMapping TypeName="UNIVERSITY_MANAGEMENT_SYSTEMModel.EVALUATION">
+              <MappingFragment StoreEntitySet="EVALUATION">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="PROFESSOR_ID" ColumnName="PROFESSOR_ID" />
+                <ScalarProperty Name="STUDENT_ID" ColumnName="STUDENT_ID" />
+                <ScalarProperty Name="COURSES_ID" ColumnName="COURSES_ID" />
+                <ScalarProperty Name="GRADE" ColumnName="GRADE" />
+                <ScalarProperty Name="CREATED_AT" ColumnName="CREATED_AT" />
+                <ScalarProperty Name="MODIFIED_AT" ColumnName="MODIFIED_AT" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="INVALIDATED" ColumnName="INVALIDATED" />
+                <ScalarProperty Name="Students_Name" ColumnName="Students_Name" />
+                <ScalarProperty Name="ABSENT" ColumnName="ABSENT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="UNIVERSITY_MANAGEMENT_SYSTEMModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserRoleMappings">
+            <EntityTypeMapping TypeName="UNIVERSITY_MANAGEMENT_SYSTEMModel.UserRoleMapping">
+              <MappingFragment StoreEntitySet="UserRoleMapping">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="ModifiedAt" ColumnName="ModifiedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserRoles">
+            <EntityTypeMapping TypeName="UNIVERSITY_MANAGEMENT_SYSTEMModel.UserRole">
+              <MappingFragment StoreEntitySet="UserRoles">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="ModifiedAt" ColumnName="ModifiedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users_Table">
+            <EntityTypeMapping TypeName="UNIVERSITY_MANAGEMENT_SYSTEMModel.Users_Table">
+              <MappingFragment StoreEntitySet="Users_Table">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="ModifiedAt" ColumnName="ModifiedAt" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="EmailConfirmationToken" ColumnName="EmailConfirmationToken" />
+                <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
+                <ScalarProperty Name="ConfirmPassword" ColumnName="ConfirmPassword" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="UNIVERSITY_MANAGEMENT_SYSTEMModel.Store.sp_alterdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="UNIVERSITY_MANAGEMENT_SYSTEMModel.Store.sp_creatediagram" />
+          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="UNIVERSITY_MANAGEMENT_SYSTEMModel.Store.sp_dropdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="UNIVERSITY_MANAGEMENT_SYSTEMModel.Store.sp_helpdiagramdefinition">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="UNIVERSITY_MANAGEMENT_SYSTEMModel.sp_helpdiagramdefinition_Result">
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="UNIVERSITY_MANAGEMENT_SYSTEMModel.Store.sp_helpdiagrams">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="UNIVERSITY_MANAGEMENT_SYSTEMModel.sp_helpdiagrams_Result">
+                <ScalarProperty Name="Database" ColumnName="Database" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Owner" ColumnName="Owner" />
+                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="UNIVERSITY_MANAGEMENT_SYSTEMModel.Store.sp_renamediagram" />
+          <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="UNIVERSITY_MANAGEMENT_SYSTEMModel.Store.sp_upgraddiagrams" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

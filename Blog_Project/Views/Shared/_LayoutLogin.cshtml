@@ -1,0 +1,150 @@
+﻿@{
+    bool isLoggedIn = true;
+    if (string.IsNullOrWhiteSpace(User.Identity.Name))
+    {
+        isLoggedIn = false;
+    }
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link type="text/css" rel="stylesheet" href="~/Content/css/bootstrap.min.css" />
+
+    <!-- Slick -->
+    <link type="text/css" rel="stylesheet" href="~/Content/css/slick.css" />
+    <link type="text/css" rel="stylesheet" href="~/Content/css/slick-theme.css" />
+
+    <!-- nouislider -->
+    <link type="text/css" rel="stylesheet" href="~/Content/css/nouislider.min.css" />
+
+    <!-- Font Awesome Icon -->
+    <link type="text/css" rel="stylesheet" href="~/fonts/fonts/FontAwesome.otf">
+    <link type="text/css" rel="stylesheet" href="~/fonts/fonts/fontawesome-webfont.svg">
+    <link type="text/css" rel="stylesheet" href="~/fonts/fonts/slick.svg">
+    <link type="text/css" rel="stylesheet" href="~/Content/css/font-awesome.min.css">
+
+    <!-- Custom stlylesheet -->
+    <link type="text/css" rel="stylesheet" href="~/Content/css/style.css" />
+    <link type="text/css" rel="stylesheet" href="~/lib/font-awesome/css/all.css" />
+
+
+    <style>
+        .dropdown-submenu .dropdown-menu {
+            top: 0;
+            left: 100%;
+            margin-top: -1px;
+        }
+    </style>
+
+</head>
+<body>
+    <!-- TOP HEADER -->
+    @*<div id="top-header" style="background-color: #467AA9; ">
+            <div class="container">
+                <ul class="header-links pull-left">
+                    <li><a href="#"><i class="fa fa-phone"></i> +021-95-51-84</a></li>
+                    <li><a href="#"><i class="fa fa-envelope-o"></i> email@email.com</a></li>
+                    <li><a href="#"><i class="fa fa-map-marker"></i> 1734 Stonecoal Road</a></li>
+                </ul>
+            </div>
+        </div>*@
+    <!-- /TOP HEADER -->
+    <!-- MAIN HEADER -->
+    <div id="header" style="background-color: #1995AD;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="header-logo">
+                        <a href="#" class="logo">
+                            <h1 style="color: ghostwhite;">UNIVERSITY MANAGEMENT SYSTEM</h1>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /MAIN HEADER -->
+    <!-- /HEADER -->
+    <!-- NAVIGATION -->
+    <nav id="navigation" style="background-color: #F6F6F6;">
+        <!-- container -->
+        <div class="container">
+            <!-- responsive-nav -->
+            <div id="responsive-nav" style="margin-left: 30%;">
+                <!-- NAV -->
+                <!-- /NAV -->
+            </div>
+            <!-- /responsive-nav -->
+        </div>
+        <!-- /container -->
+    </nav>
+
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - UNIVERSITY MANAGEMENT SYSTEM</p>
+        </footer>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- jQuery Plugins -->
+    <script src="~/Scripts/js/jquery.min.js"></script>
+    <script src="~/Scripts/js/bootstrap.min.js"></script>
+    <script src="~/Scripts/js/slick.min.js"></script>
+    <script src="~/Scripts/js/nouislider.min.js"></script>
+    <script src="~/Scripts/js/jquery.zoom.min.js"></script>
+    <script src="~/Scripts/js/main.js"></script>
+
+    @RenderSection("scripts", required: false)
+
+
+
+</body>
+</html>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#searchForm').submit(function (e) {
+
+            var searchTerm = $('#searchTerm').val();
+
+            var searchUrl = '@Url.Action("Search", "Image")' + '?searchTerm=' + encodeURIComponent(searchTerm);
+
+            var form = $('<form>', {
+                action: searchUrl,
+                method: 'post',
+            });
+
+            $('<input>', {
+                type: 'hidden',
+                name: 'searchTerm',
+                value: searchTerm
+            }).appendTo(form);
+
+            form.appendTo('body').submit();
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('.dropdown-submenu a.test').on("click", function (e) {
+            $(this).next('ul').toggle();
+            e.stopPropagation();
+            e.preventDefault();
+        });
+    });
+</script>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="bd8acaceb3a3418184270fcdf167242d" Name="Diagram1">
+        <EntityTypeShape EntityType="UNIVERSITY_MANAGEMENT_SYSTEMModel.COURS" Width="1.5" PointX="3" PointY="5.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="UNIVERSITY_MANAGEMENT_SYSTEMModel.EVALUATION" Width="1.5" PointX="5.25" PointY="5.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="UNIVERSITY_MANAGEMENT_SYSTEMModel.sysdiagram" Width="1.5" PointX="7.75" PointY="3" IsExpanded="true" />
+        <EntityTypeShape EntityType="UNIVERSITY_MANAGEMENT_SYSTEMModel.UserRoleMapping" Width="1.5" PointX="0.75" PointY="10.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="UNIVERSITY_MANAGEMENT_SYSTEMModel.UserRole" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="UNIVERSITY_MANAGEMENT_SYSTEMModel.Users_Table" Width="1.5" PointX="0.75" PointY="5.125" IsExpanded="true" />
+        <AssociationConnector Association="UNIVERSITY_MANAGEMENT_SYSTEMModel.FK__COURSES__PROFESS__05D8E0BE" ManuallyRouted="false" />
+        <AssociationConnector Association="UNIVERSITY_MANAGEMENT_SYSTEMModel.FK__EVALUATIO__COURS__3587F3E0" ManuallyRouted="false" />
+        <AssociationConnector Association="UNIVERSITY_MANAGEMENT_SYSTEMModel.FK__EVALUATIO__PROFE__339FAB6E" ManuallyRouted="false" />
+        <AssociationConnector Association="UNIVERSITY_MANAGEMENT_SYSTEMModel.FK__EVALUATIO__STUDE__3493CFA7" ManuallyRouted="false" />
+        <AssociationConnector Association="UNIVERSITY_MANAGEMENT_SYSTEMModel.FK__UserRoles__RoleI__3C34F16F" ManuallyRouted="false" />
+        <AssociationConnector Association="UNIVERSITY_MANAGEMENT_SYSTEMModel.FK__UserRoles__RoleI__75A278F5" ManuallyRouted="false" />
+        <AssociationConnector Association="UNIVERSITY_MANAGEMENT_SYSTEMModel.FK__UserRoles__UserI__3D2915A8" ManuallyRouted="false" />
+        <AssociationConnector Association="UNIVERSITY_MANAGEMENT_SYSTEMModel.FK__UserRoles__UserI__76969D2E" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

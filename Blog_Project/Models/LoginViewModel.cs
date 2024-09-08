@@ -8,9 +8,9 @@ namespace Blog_Project.Models
 {
     public class LoginViewModel
     {
-        [Required(ErrorMessage = "Emri i perdoruesit eshte i detyruar!")]
+        [Required(ErrorMessage = "Username is required!")]
         public string Username { get; set; }
-        [Required(ErrorMessage = "Fjalekalimi eshte i detyruar!")]
+        [Required(ErrorMessage = "Password is required!")]
         public string Password { get; set; }
     }
 }

@@ -47,31 +47,6 @@
 <br />
 <br />
 <nav id="" style="background-color: #F6F6F6;">
-    <!-- container -->
-    <div class="container">
-        <ul class="main-nav nav navbar-nav" style="margin:auto;">
-            <li class="nav-item">
-                @using (Html.BeginForm("AddRole", "Account", FormMethod.Post))
-                {
-                    <div style="display:flex;flex-direction:row;  border-radius:20px;margin:auto; ">
-                        <input type="text" name="newRole" style="width: 350px; border-radius: 20px;" class="form-control" placeholder="Shto nje rol te ri..." required />&nbsp;
-                        <button type="submit" class="btn btn-primary" style="border-radius:20px;">Add Role</button>
-                    </div>
-                }
-            </li>
-            <li class="nav-item">
-                @using (Html.BeginForm("SearchUser", "Account", FormMethod.Post, new { id = "searchForm" }))
-                {
-                    <div class="input-group" style="display:flex;flex-direction:row; margin:auto;">
-                        <input class="form-control search-input" style="width: 350px; border-radius: 20px" name="searchTerm" id="searchTerm" placeholder="Kerko ketu">&nbsp;
-                        <div class="input-group-append">
-                            <button class="btn btn-primary search-btn" type="submit" style="border-radius:20px;"><i class="fa fa-search"></i> Kerko</button>
-                        </div>
-                    </div>
-                }
-            </li>
-        </ul>
-    </div>
 </nav>
 
 <br />
@@ -96,8 +71,8 @@
 <table class="table table-striped" style="border:1px solid #C0C0C0;">
     <thead>
         <tr class="table-active">
-            <th>Emri i perdoruesit</th>
-            <th>Roli</th>
+            <th>Username</th>
+            <th>Role</th>
 
         </tr>
     </thead>
@@ -121,7 +96,7 @@
                                 <option value="@role" @(userRole.Role == role ? "selected" : "")>@role</option>
                             }
                         </select>
-                        <button type="submit" class="btn btn-info">Ndrysho Rolin</button>
+                        <button type="submit" class="btn btn-info">Change role</button>
                     }
                 </td>
 

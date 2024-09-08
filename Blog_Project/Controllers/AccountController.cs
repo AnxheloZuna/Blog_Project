@@ -30,11 +30,34 @@ namespace Blog_Project.Controllers
         [HttpPost]
         public ActionResult Login(LoginViewModel credentials)
         {
+            var userId = dbContext.Users_Table
+                                .Where(x => x.CreatedBy == credentials.Username)
+                                .Select(x => x.UserId)
+                                .FirstOrDefault();
+            var roleId = dbContext.UserRoles.Where(x => x.Id == userId).Select(x => x.RoleId).FirstOrDefault();
+            var role = dbContext.UserRoleMappings.Where(x => x.Id == roleId).Select(x => x.Role).FirstOrDefault();
+
             switch (authenticationService.AuthenticateUser(credentials))
             {
                 case 1:
                     FormsAuthentication.SetAuthCookie(credentials.Username, false);
-                    return RedirectToAction("Index", "Home");
+                    if (role == "Admin")
+                    {
+                        return RedirectToAction("UserRoles", "Account");
+                    }
+                    else if (role == "Professor")
+                    {
+                        return RedirectToAction("Index", "ProfessorView");
+                    }
+                    else if (role == "Student")
+                    {
+                        return RedirectToAction("StudentIndex", "StudentView");
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Home");
+
+                    }
                 case 2:
                     ModelState.AddModelError("", "Emri ose Fjalekalimi i pasakte!");
                     break;
@@ -52,7 +75,7 @@ namespace Blog_Project.Controllers
         {
             if (authenticationService.Signup(userinfo, role))
             {
-                TempData["PostMessage"] = "Regjistrimi u krye me sukses!";
+                TempData["PostMessage"] = "Registration was completed successfully!";
                 return Redirect("https://localhost:44335/Account/Login?ReturnUrl=%2f");
             }
             bool isUsernameInUse = dbContext.Users_Table.Any(u => u.CreatedBy == userinfo.CreatedBy);
@@ -60,24 +83,24 @@ namespace Blog_Project.Controllers
 
             if (isUsernameInUse)
             {
-                ModelState.AddModelError("", "Emri eshte ne perdorim. Ju lutem zgjidhni nje emer tjeter.");
+                ModelState.AddModelError("", "The name is in use. Please choose another name..");
                 return View(userinfo);
             }
             if (isEmailInUse)
             {
-                ModelState.AddModelError("", "Email-i eshte ne perdorim. Ju lutem zgjidhni nje email tjeter.");
+                ModelState.AddModelError("", "Email is in use. Please choose another email.");
                 return View(userinfo);
             }
 
             if (userinfo.Password != userinfo.ConfirmPassword)
             {
-                ModelState.AddModelError("", "Fjalekalimi dhe Konfirmo fjalekalimin nuk jane te njejte.");
+                ModelState.AddModelError("", "Password and Confirm password are not the same.");
                 return View(userinfo);
             }
 
             else
             {
-                ModelState.AddModelError("Password", "Fjalekalimi duhet te jete te pakten me 8 karaktere dhe duhet te permbaje te pakten nje germe.");
+                ModelState.AddModelError("Password", "The password must be at least 8 characters long and must contain at least one letter.");
                 return View(userinfo);
             }
 
@@ -128,13 +151,13 @@ namespace Blog_Project.Controllers
                 switch (authenticationService.ChangeUserRole(UserId, NewRole, updatedUser))
                 {
                     case 1:
-                        TempData["PostMessage"] = "Roli u ndryshua me sukses!";
+                        TempData["PostMessage"] = "Role changed successfully!";
                         break;
                     case 2:
-                        TempData["PostMessage"] = "Roli nuk u gjet!";
+                        TempData["PostMessage"] = "Role not found!";
                         break;
                     case 3:
-                        TempData["PostMessage"] = "Përdoruesi nuk u gjet!";
+                        TempData["PostMessage"] = "User not found!";
                         break;
                     default: break;
                 }
@@ -143,7 +166,7 @@ namespace Blog_Project.Controllers
             }
             catch (Exception)
             {
-                TempData["PostMessage"] = "Ndodhi një gabim gjatë ndryshimit të rolit.";
+                TempData["PostMessage"] = "An error occurred while changing the role.";
                 return RedirectToAction("UserRoles", "Account");
             }
         }
